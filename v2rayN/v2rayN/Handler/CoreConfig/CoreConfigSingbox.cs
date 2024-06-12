@@ -566,20 +566,6 @@ namespace v2rayN.Handler.CoreConfig
                     {
                         singboxConfig.route.rules.AddRange(tunRules);
                     }
-
-                    GenRoutingDirectExe(out List<string> lstDnsExe, out List<string> lstDirectExe);
-                    singboxConfig.route.rules.Add(new()
-                    {
-                        port = new() { 53 },
-                        outbound = dnsOutbound,
-                        process_name = lstDnsExe
-                    });
-
-                    singboxConfig.route.rules.Add(new()
-                    {
-                        outbound = Global.DirectTag,
-                        process_name = lstDirectExe
-                    });
                 }
 
                 if (_config.routingBasicItem.enableRoutingAdvanced)
@@ -615,32 +601,6 @@ namespace v2rayN.Handler.CoreConfig
                 Logging.SaveLog(ex.Message, ex);
             }
             return 0;
-        }
-
-        private void GenRoutingDirectExe(out List<string> lstDnsExe, out List<string> lstDirectExe)
-        {
-            lstDnsExe = new();
-            lstDirectExe = new();
-            var coreInfo = LazyConfig.Instance.GetCoreInfo();
-            foreach (var it in coreInfo)
-            {
-                if (it.coreType == ECoreType.v2rayN)
-                {
-                    continue;
-                }
-                foreach (var it2 in it.coreExes)
-                {
-                    if (!lstDnsExe.Contains(it2) && it.coreType != ECoreType.sing_box)
-                    {
-                        lstDnsExe.Add($"{it2}.exe");
-                    }
-
-                    if (!lstDirectExe.Contains(it2))
-                    {
-                        lstDirectExe.Add($"{it2}.exe");
-                    }
-                }
-            }
         }
 
         private int GenRoutingUserRule(RulesItem item, List<Rule4Sbox> rules)
